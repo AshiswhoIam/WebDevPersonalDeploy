@@ -62,7 +62,7 @@ const ApiStatus = () => {
         <div className="w-3 h-3 bg-red-500 rounded-full"></div>
         <span className="text-sm font-medium">API Offline</span>
         <span className="text-xs text-gray-500">
-          FastAPI server may not be running on correct port (http://localhost:8000) or deployed server
+          Hugging space server is currently down :( do try again later.
         </span>
       </div>
     );

@@ -1,5 +1,4 @@
-//Base URL for your Hugging Face Space 
-const POKEMON_API_URL = process.env.NEXT_PUBLIC_HF_SPACE_URL
+//all API calls go through Next.js API routes instead of direct calls
 
 //Interface defining the structure of detailed Pokémon information.
 export interface PokemonInfo {
@@ -27,30 +26,16 @@ export interface HealthCheckResponse {
   total_classes: number;
 }
 
-//Helper function to get headers for Hugging Face API calls
-const getHeaders = () => {
-  const headers: Record<string, string> = {};
-  
-  //Add Hugging Face token if available for private spaces
-  const hfToken = process.env.NEXT_PUBLIC_HF_TOKEN;
-  if (hfToken) {
-    headers['Authorization'] = `Bearer ${hfToken}`;
-  }
-  
-  return headers;
-};
-
-//Sends image file to the FastAPI backend for prediction.
+//Sends image file to the Next.js API route for prediction.
 //Returns the predicted Pokémon and additional info.
 export const predictPokemon = async (file: File): Promise<PokemonPredictionResponse> => {
   try {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await fetch(`${POKEMON_API_URL}/predict`, {
+    const response = await fetch('/api/predict', {
       method: 'POST',
       body: formData,
-      headers: getHeaders(),
     });
 
     if (!response.ok) {
@@ -59,7 +44,7 @@ export const predictPokemon = async (file: File): Promise<PokemonPredictionRespo
       
       try {
         const error = JSON.parse(errorText);
-        errorMessage = error.detail || errorMessage;
+        errorMessage = error.error || errorMessage;
       } catch {
         errorMessage = errorText || errorMessage;
       }
@@ -79,17 +64,25 @@ export const predictPokemon = async (file: File): Promise<PokemonPredictionRespo
   }
 };
 
-//Checks the health status of FastAPI backend.
-//Check if model is loaded and ready.
+//Checks the health status of FastAPI backend through Next.js API route.
 export const checkApiHealth = async (): Promise<HealthCheckResponse> => {
   try {
-    const response = await fetch(`${POKEMON_API_URL}/health`, {
+    const response = await fetch('/api/health', {
       method: 'GET',
-      headers: getHeaders(),
     });
     
     if (!response.ok) {
-      throw new Error(`Health check failed: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      let errorMessage = 'Health check failed';
+      
+      try {
+        const error = JSON.parse(errorText);
+        errorMessage = error.error || errorMessage;
+      } catch {
+        errorMessage = errorText || errorMessage;
+      }
+      
+      throw new Error(`Health check failed (${response.status}): ${errorMessage}`);
     }
     
     return response.json();
@@ -104,16 +97,25 @@ export const checkApiHealth = async (): Promise<HealthCheckResponse> => {
   }
 };
 
-//Get available Pokemon classes
+//Get available Pokemon classes through Next.js API route
 export const getPokemonClasses = async (): Promise<{ classes_by_row: string[], total_classes: number }> => {
   try {
-    const response = await fetch(`${POKEMON_API_URL}/classes`, {
+    const response = await fetch('/api/classes', {
       method: 'GET',
-      headers: getHeaders(),
     });
     
     if (!response.ok) {
-      throw new Error(`Failed to get classes: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      let errorMessage = 'Failed to get classes';
+      
+      try {
+        const error = JSON.parse(errorText);
+        errorMessage = error.error || errorMessage;
+      } catch {
+        errorMessage = errorText || errorMessage;
+      }
+      
+      throw new Error(`Failed to get classes (${response.status}): ${errorMessage}`);
     }
     
     return response.json();
@@ -123,16 +125,25 @@ export const getPokemonClasses = async (): Promise<{ classes_by_row: string[], t
   }
 };
 
-//Debug function to check API status (useful for development)
+//Debug function to check API status through Next.js API route
 export const debugApi = async () => {
   try {
-    const response = await fetch(`${POKEMON_API_URL}/debug`, {
+    const response = await fetch('/api/debug', {
       method: 'GET',
-      headers: getHeaders(),
     });
     
     if (!response.ok) {
-      throw new Error(`Debug failed: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      let errorMessage = 'Debug failed';
+      
+      try {
+        const error = JSON.parse(errorText);
+        errorMessage = error.error || errorMessage;
+      } catch {
+        errorMessage = errorText || errorMessage;
+      }
+      
+      throw new Error(`Debug failed (${response.status}): ${errorMessage}`);
     }
     
     return response.json();
