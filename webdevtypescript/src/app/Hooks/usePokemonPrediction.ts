@@ -1,6 +1,7 @@
-//webdevtypescript\src\app\api\customHook\route.ts
+"use client";
+
 import { useState, useCallback } from 'react';
-import { predictPokemon, PokemonPredictionResponse } from '../utils/route';
+import { predictPokemon, PokemonPredictionResponse } from '../../app/api/utils/route';
 
 //Define the shape of the internal state for the prediction hook
 interface UsePokemonPredictionState {

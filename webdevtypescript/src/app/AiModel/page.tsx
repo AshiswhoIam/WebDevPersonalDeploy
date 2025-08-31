@@ -4,7 +4,7 @@ import Header from '../Components/header';
 import Footer from '../Components/footer';
 import FileUpload from '../Components/fileupload';
 import ApiStatus from '../Components/statusaiapi';
-import { usePokemonPrediction } from '../api/customHook/route';
+import { usePokemonPrediction } from '../Hooks/usePokemonPrediction';
 
 const AiModel: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
