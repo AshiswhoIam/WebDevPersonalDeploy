@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import clientPromise from '../../../../../backend/lib/mongodb';
 
+//Interface for the incoming tracking payload
 interface TrackingData {
   page: string;
   totalClicks?: number;
@@ -11,12 +12,16 @@ interface TrackingData {
   isFirstVisitToPage?: boolean;
 }
 
+//Flag to ensure TTL index is only created once
 let ttlIndexCreated = false;
 
+//Handle POST requests to track page views, clicks, and unique visitors
 export async function POST(req: NextRequest) {
   try {
+    //Parse tracking data from request body
     const trackingData: TrackingData = await req.json();
 
+    //Validate required field
     if (!trackingData.page) {
       return NextResponse.json({ 
         message: 'Page is required' 

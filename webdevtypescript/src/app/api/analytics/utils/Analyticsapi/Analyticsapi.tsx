@@ -1,4 +1,6 @@
 //webdevtypescript\src\app\api\analytics\utils\Analyticsapi\Analyticsapi.tsx
+
+//Overall analytics summary (totals, averages, top pages, active users)
 export interface AnalyticsStats {
   totalViews: number;
   uniqueVisitors: number;
@@ -7,7 +9,7 @@ export interface AnalyticsStats {
   topPages: string[];
   activeUsers: number;
 }
-
+//Per-page analytics
 export interface PageView {
   id: string;
   page: string;
@@ -17,6 +19,7 @@ export interface PageView {
   bounceRate: string;
 }
 
+//Individual user activity
 export interface UserActivity {
   id: string;
   type: 'anonymous' | 'registered';
@@ -28,6 +31,7 @@ export interface UserActivity {
   totalClicks: number;
 }
 
+//Combined analytics response from the backend
 export interface AnalyticsData {
   stats: AnalyticsStats;
   pageViews: PageView[];

@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
 import clientPromise from '../../../../../backend/lib/mongodb';
 
+//Helper function to verify admin JWT token
 const verifyAdminToken = async (request: NextRequest) => {
   const token = request.cookies.get('token')?.value;
   if (!token || !process.env.JWT_SECRET) return null;
@@ -14,7 +15,8 @@ const verifyAdminToken = async (request: NextRequest) => {
     const client = await clientPromise;
     const users = client.db('Webdev').collection('info');
     const user = await users.findOne({ _id: new ObjectId(decoded.userId) });
-    
+
+    //Return user only if admin and active
     if (user && user.role === 'admin' && user.isActive !== false) {
       return user;
     }
@@ -24,6 +26,7 @@ const verifyAdminToken = async (request: NextRequest) => {
   }
 };
 
+//GET endpoint to fetch overall page stats and user analytics
 export async function GET(req: NextRequest) {
   try {
     //Verify admin access
@@ -98,13 +101,13 @@ export async function GET(req: NextRequest) {
       anonymousUsers: page.anonymousUsers || 0
     }));
 
-    //Get top pages (by views, not by unique visitors)
+    //Get top pages by views, not by unique visitors
     const topPages = allPageStats
       .sort((a, b) => (b.totalViews || 0) - (a.totalViews || 0))
       .slice(0, 5)
       .map(page => page.page);
 
-    // Calculate proper percentages for user distribution
+    //Calculate proper percentages for user distribution
     const registeredPercentage = uniqueVisitors > 0 ? Math.round((totalRegistered / uniqueVisitors) * 100) : 0;
     const anonymousPercentage = uniqueVisitors > 0 ? Math.round((totalAnonymous / uniqueVisitors) * 100) : 0;
 
@@ -116,7 +119,7 @@ export async function GET(req: NextRequest) {
         avgSessionDuration: '0s', // Simplified
         topPages,
         activeUsers,
-        // Additional stats for better frontend display
+        //Additional stats for better frontend display
         registeredUsers: totalRegistered,
         anonymousUsers: totalAnonymous,
         registeredPercentage,

@@ -1,5 +1,5 @@
 // webdevtypescript\src\app\api\analytics\setup-indexes\route.ts
-// Run this once to set up TTL indexes properly
+//Run once to set up TTL indexes properly
 
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';

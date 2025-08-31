@@ -2,10 +2,10 @@ import { MongoClient } from 'mongodb';
 
 //Defining uri constant to use for MongoClient connection
 const uri = process.env.MONGODB_URI;
-//Empty object that is passed to MongoClient constructor normally to specify config beviour
+//Empty object that is passed to MongoClient constructor normally to specify config behaviour
 const options = {};
 
-//JSDoc Using type to tell editor client will be a MongoClient isntance
+//JSDoc Using type to tell editor client will be a MongoClient instance
 
 /** @type {import('mongodb').MongoClient} */
 let client;
