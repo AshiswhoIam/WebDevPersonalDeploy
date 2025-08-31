@@ -1,6 +1,6 @@
 // components/ApiStatus.tsx
 import { useState, useEffect } from 'react';
-import { checkApiHealth } from '../api/utils/route';
+import { checkApiHealth } from '../Utils/pokemonApi';
 
 //Component that monitors API and model status
 const ApiStatus = () => {

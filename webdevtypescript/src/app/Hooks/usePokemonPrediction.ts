@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from 'react';
-import { predictPokemon, PokemonPredictionResponse } from '../../app/api/utils/route';
+import { predictPokemon, PokemonPredictionResponse } from '../../app/Utils/pokemonApi';
 
 //Define the shape of the internal state for the prediction hook
 interface UsePokemonPredictionState {
