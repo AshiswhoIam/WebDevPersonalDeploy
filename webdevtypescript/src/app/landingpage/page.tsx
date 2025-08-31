@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 import Header from '../Components/header';
 import Footer from '../Components/footer';
 import React from 'react';
-import styles from './LandingPage.module.css';
+import styles from './Landingpage.module.css';
 import Link from 'next/link';
 
 const LandingPage: React.FC = () => {
