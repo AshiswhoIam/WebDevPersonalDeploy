@@ -27,6 +27,7 @@ const verifyAdminToken = async (request: NextRequest) => {
   }
 };
 
+//POST endpoint to create indexes in 'unique_visitors' collection
 export async function POST(req: NextRequest) {
   try {
     //Verify admin access
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
     const results = [];
 
     try {
-      //Create TTL index - documents expire 1 hours after lastVisit
+      //Create TTL index documents that expire 1 hours after lastVisit
       await uniqueVisitors.createIndex(
         { "lastVisit": 1 }, 
         { 
@@ -67,7 +68,7 @@ export async function POST(req: NextRequest) {
         { "page": 1, "visitorKey": 1 }, 
         { 
           name: "page_visitor_compound",
-          unique: true // Prevent duplicate visitor records for same page
+          unique: true //Prevent duplicate visitor records for same page
         }
       );
       results.push("✓ Compound index created for page-visitor lookups");

@@ -34,9 +34,7 @@ GoogleEndUsers: https://developers.google.com/terms#a_your_end_users
 
 
 Left to do:
-Read me update pics etc.
 Better Comments
-
 work on deployment.
 REMINDER TO FIX DB COLLECTIONS FOR DELETED STUFF
 some user exp stuff later when dep.

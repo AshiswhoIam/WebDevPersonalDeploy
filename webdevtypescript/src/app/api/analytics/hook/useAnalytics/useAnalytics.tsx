@@ -1,4 +1,4 @@
-//useAnalytics.tsx - FIXED VERSION
+//webdevtypescript\src\app\api\analytics\hook\useAnalytics\useAnalytics.tsx
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 
@@ -9,7 +9,7 @@ const useAnalytics = () => {
   const previousPathname = useRef<string>('');
   const sessionId = useRef<string>('');
   const visitedPages = useRef<Set<string>>(new Set());
-  const hasInitializedSession = useRef<boolean>(false); // NEW: Track if session is initialized
+  const hasInitializedSession = useRef<boolean>(false); //Track if session is initialized
 
   //Generate session ID once per browser session
   useEffect(() => {
@@ -56,7 +56,7 @@ const useAnalytics = () => {
     };
   }, []);
 
-  //Track page views (runs on every pathname change)
+  //Track page views, runs on every pathname change
   useEffect(() => {
     if (typeof window === 'undefined' || !hasInitializedSession.current) return;
 
@@ -91,7 +91,7 @@ const useAnalytics = () => {
     };
 
     trackPageView();
-  }, [pathname]); // Remove hasTrackedView dependency
+  }, [pathname]); //Remove hasTrackedView dependency
 
   //Send click data when user leaves page or navigates
   useEffect(() => {
@@ -104,7 +104,7 @@ const useAnalytics = () => {
             page: pageToTrack,
             totalClicks: clickCount.current,
             sessionId: sessionId.current,
-            isInitialView: false, // This is a click update
+            isInitialView: false, //This is a click update
             isFirstVisitToPage: false
           });
 
@@ -150,7 +150,7 @@ const useAnalytics = () => {
     };
   }, [pathname]);
 
-  //Handle page changes - send clicks from previous page
+  //Handle page changes, send clicks from previous page
   useEffect(() => {
     //If we have a previous page with clicks, send them
     if (previousPathname.current && clickCount.current > 0 && hasInitializedSession.current) {
@@ -176,7 +176,7 @@ const useAnalytics = () => {
     //Update previous pathname and reset click counter
     previousPathname.current = pathname;
     clickCount.current = 0;
-    // DON'T reset sessionStartTime here - removed this line
+    //DON'T reset sessionStartTime here
   }, [pathname]);
 
   return {};

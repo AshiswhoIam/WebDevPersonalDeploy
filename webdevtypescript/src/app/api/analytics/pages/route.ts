@@ -25,6 +25,7 @@ const verifyAdminToken = async (request: NextRequest) => {
   }
 };
 
+//GET endpoint to fetch detailed page analytics with optional filters
 export async function GET(req: NextRequest) {
   try {
     //Verify admin access

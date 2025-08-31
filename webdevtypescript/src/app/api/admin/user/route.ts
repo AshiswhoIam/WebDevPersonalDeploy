@@ -9,14 +9,16 @@ const verifyAdminToken = async (request: NextRequest) => {
   if (!token || !process.env.JWT_SECRET) return null;
   
   try {
+
+    //Verify token with secret key and extract userId from payload aka mid part of token
     const decoded = jwt.verify(token, process.env.JWT_SECRET) as { userId: string };
     
-    // Get user from database to check role
+    //Get user from MongoDB 'info' collection using decoded userId to check role
     const client = await clientPromise;
     const users = client.db('Webdev').collection('info');
     const user = await users.findOne({ _id: new ObjectId(decoded.userId) });
     
-    // Return user if they're admin
+    //Return user if they're admin
     if (user && user.role === 'admin') {
       return user;
     }
@@ -50,6 +52,7 @@ const cleanupInactiveUsers = async () => {
       }
     );
 
+    //Return number of users marked offline, or 0 if an error occurs
     console.log(`Auto-cleanup: Marked ${result.modifiedCount} users as offline`);
     return result.modifiedCount;
   } catch (error) {
@@ -61,7 +64,7 @@ const cleanupInactiveUsers = async () => {
 //Retrieve all users for admin management
 export async function GET(req: NextRequest) {
   try {
-    // Verify admin access
+    //Verify admin access
     const adminUser = await verifyAdminToken(req);
     if (!adminUser) {
       return NextResponse.json({ 
@@ -99,6 +102,7 @@ export async function GET(req: NextRequest) {
       role: user.role || 'user'
     }));
 
+    //Return JSON response with user list and cleanup info, HTTP status 200
     return NextResponse.json({
       users: formattedUsers,
       cleanupInfo: {

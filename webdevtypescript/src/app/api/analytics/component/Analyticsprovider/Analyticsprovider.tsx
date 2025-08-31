@@ -3,14 +3,15 @@
 import React from 'react';
 import useAnalytics from '../../hook/useAnalytics/useAnalytics';
 
+//Wraps app components to automatically track analytics
 interface AnalyticsProviderProps {
-  children: React.ReactNode;
+  children: React.ReactNode; //Components wrapped Children = any jsx element inside component
 }
 
 const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({ children }) => {
-  useAnalytics(); // This will automatically track page views and user activity
+  useAnalytics(); //Hook that tracks page views and user activity automatically
 
-  return <>{children}</>;
+  return <>{children}</>;//React Fragment invis container Render wrapped components
 };
 
 export default AnalyticsProvider;
