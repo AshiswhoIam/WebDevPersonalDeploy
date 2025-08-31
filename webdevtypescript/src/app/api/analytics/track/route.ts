@@ -1,4 +1,4 @@
-// /api/analytics/track/route.ts - FIXED VERSION
+// /api/analytics/track/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import clientPromise from '../../../../../backend/lib/mongodb';
@@ -77,35 +77,33 @@ export async function POST(req: NextRequest) {
       
       if (!hasVisitedAnyPageRecently) {
         shouldCountAsUniqueVisitor = true;
-        
-        //Record this visitor visit
-        await uniqueVisitors.insertOne({
-          page: trackingData.page,
-          visitorKey: visitorKey,
-          isRegistered: isRegistered,
-          userId: userId,
-          sessionId: sessionId,
-          lastVisit: new Date()
-        });
-      } else {
-        //Update the lastVisit time to reset TTL countdown
-        await uniqueVisitors.updateOne(
-          { visitorKey: visitorKey },
-          { 
-            $set: { 
-              lastVisit: new Date(),
-              page: trackingData.page //Update current page
-            } 
-          }
-        );
       }
+      
+      // Use upsert to handle both insert and update cases
+      await uniqueVisitors.updateOne(
+        {
+          page: trackingData.page,
+          visitorKey: visitorKey
+        },
+        {
+          $set: {
+            page: trackingData.page,
+            visitorKey: visitorKey,
+            isRegistered: isRegistered,
+            userId: userId,
+            sessionId: sessionId,
+            lastVisit: new Date()
+          }
+        },
+        { upsert: true }
+      );
     }
 
-    // Build the update query
+    //Build the update query
     let updateData: any;
 
     if (trackingData.isInitialView) {
-      // This is an initial page view  increment views and potentially unique users
+      //This is an initial page view  increment views and potentially unique users
       updateData = {
         $set: {
           lastUpdated: new Date()
@@ -117,7 +115,7 @@ export async function POST(req: NextRequest) {
         $inc: {
           totalViews: 1,
           totalClicks: trackingData.totalClicks || 0,
-          // Only count unique users for actual unique visitors
+          //Only count unique users for actual unique visitors
           registeredUsers: (shouldCountAsUniqueVisitor && isRegistered) ? 1 : 0,
           anonymousUsers: (shouldCountAsUniqueVisitor && !isRegistered) ? 1 : 0
         }
