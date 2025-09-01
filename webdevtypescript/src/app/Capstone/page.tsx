@@ -79,27 +79,32 @@ const Capstone: React.FC = () => {
           </div>
         </section>
         {/* Section 3  */}
-        <section className="min-h-screen bg-gradient-to-br from-slate-900 via-red-900 to-slate-900 py-20 px-6">
+        <section className="min-h-screen bg-gradient-to-br from-slate-900 via-red-900 to-slate-900 py-12 sm:py-16 lg:py-20 px-4 sm:px-6">
           <div className="max-w-7xl mx-auto">
             {/* Header Text */}
-            <div className="mb-16">
-              <h2 className="text-6xl font-bold text-white mb-6 tracking-tight">
+            <div className="mb-8 sm:mb-12 lg:mb-16">
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 tracking-tight">
                 Demo
               </h2>
-              <p className="text-xl text-gray-300 max-w-2xl leading-relaxed">
+              <p className="text-lg sm:text-xl text-gray-300 max-w-2xl leading-relaxed">
                 This demo showcases the features and design of the capstone application, highlighting seamless navigation, intuitive interfaces, and user-focused functionality.
               </p>
             </div>
+            
             {/* Video Container */}
-            <div className="flex justify-center">
-              <div className="relative group">
+            <div className="flex justify-center w-full">
+              <div className="relative group w-full max-w-4xl">
                 {/* Glow Effect - moved behind video */}
                 <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl blur opacity-20 group-hover:opacity-30 transition-opacity duration-300 -z-10"></div>
           
-                {/* Video Container */}
-                <div className="relative w-[800px] h-[450px] bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-700 group-hover:shadow-purple-500/20 transition-all duration-300">
+                {/* Responsive Video Container */}
+                <div className="relative w-full bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-700 group-hover:shadow-purple-500/20 transition-all duration-300" style={{ aspectRatio: '16/9' }}>
                   {/* Video Element */}
-                  <video className="w-full h-full object-cover relative z-10"controls>
+                  <video 
+                    className="w-full h-full object-contain relative z-10" 
+                    controls
+                    preload="metadata"
+                  >
                     <source src="/Final Demo.mp4" type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
