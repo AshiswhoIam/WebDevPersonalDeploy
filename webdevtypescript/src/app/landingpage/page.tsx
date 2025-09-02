@@ -47,7 +47,7 @@ const LandingPage: React.FC = () => {
               className="w-full h-full object-cover"
             />
             {/* Optional overlay for better text readability */}
-            <div className="absolute top-0 left-0 w-full h-full bg-black/30" />
+            <div className="absolute top-0 left-0 w-full h-full bg-black/20" />
           </div>
           
           {/* MainS2 Container */}
@@ -84,15 +84,17 @@ const LandingPage: React.FC = () => {
 
         {/* Section 3  */}
         <section className="relative py-20 overflow-hidden">
-          {/* Fullscreen Video Background */}
-          <video
-            className="absolute top-0 left-0 w-full h-full object-cover z-0"
-            src="/S3Vid2.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-          />
+          {/* Background Image */}
+          <div className="absolute top-0 left-0 w-full h-full">
+            <img 
+              src="/S3Bg.jpg" 
+              alt="Section 3 Background" 
+              className="w-full h-full object-cover z-0"
+            />
+            {/* Optional overlay for better text readability */}
+            <div className="absolute top-0 left-0 w-full h-full bg-black/20 z-10" />
+          </div>
+          
           {/* Content Container z-index */}
           <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-white">
@@ -138,7 +140,7 @@ const LandingPage: React.FC = () => {
         {/* Section 4 bg with centered text */}
         <section className="py-54 bg-[url('/S4Main2.png')] bg-cover bg-center bg-no-repeat relative">
           {/* Subtle overlay for contrast */}
-          <div className="absolute inset-0 bg-black/50" />
+          <div className="absolute inset-0 bg-black/20" />
           {/* Content wrapper */}
           <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fadeIn">
             <h3 className={`text-4xl md:text-5xl font-bold mb-6 text-white drop-shadow-lg ${styles.heroText}`}>
@@ -146,7 +148,7 @@ const LandingPage: React.FC = () => {
             </h3>
             <div className="w-24 h-1 bg-blue-500 mx-auto mb-6 opacity-75" />
             <blockquote className={`text-xl md:text-2xl font-semibold italic text-white max-w-2xl mx-auto ${styles.quoteText}`}>
-              “Discipline is doing what you hate to do, but doing it like you love it.” <br /> — Mike Tyson
+              "Discipline is doing what you hate to do, but doing it like you love it." <br /> — Mike Tyson
             </blockquote>
           </div>
         </section>
@@ -158,4 +160,3 @@ const LandingPage: React.FC = () => {
 };
 
 export default LandingPage;
-
