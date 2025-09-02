@@ -49,25 +49,19 @@ const Chess: React.FC = () => {
               </p>
             </div>
 
-            {/* Video Container */}
+            {/* YouTube Video Container */}
             <div className="w-full max-w-4xl mx-auto">
               <div className="relative bg-black/30 backdrop-blur-sm rounded-2xl p-8 border border-white/20 shadow-2xl">
                 <div className="aspect-video bg-gray-900 rounded-xl overflow-hidden shadow-inner">
-                  {/* Replace this with your actual video */}
-                  <video 
-                    className="w-full h-full object-cover"
-                    controls
-                  >
-                    <source src="/ChessDemo.mp4" type="video/mp4" />
-                    {/* Fallback for browsers that don't support video */}
-                    <div className="flex items-center justify-center h-full bg-gray-800 text-white">
-                      <div className="text-center">
-                        <div className="text-6xl mb-4">🎥</div>
-                        <p className="text-xl">Video not supported in your browser</p>
-                        <p className="text-sm text-gray-400 mt-2">Please use a modern browser to view the demo</p>
-                      </div>
-                    </div>
-                  </video>
+                  {/* YouTube Embed */}
+                  <iframe
+                    className="w-full h-full"
+                    src="https://www.youtube.com/embed/AJUybhZbAic"
+                    title="Chess Game Demo"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
                 </div>
                 
                 {/* Video description */}

@@ -237,7 +237,7 @@ const Academics: React.FC = () => {
         </section>
 
         {/* Section 3 */}
-        <section className="relative py-16 bg-[url('/AcadS3.png')] bg-cover bg-center bg-no-repeat">
+        <section className="relative py-16 bg-[url('/AcadS3.jpg')] bg-cover bg-center bg-no-repeat">
           {/* overlay for better text readability */}
           <div className="absolute inset-0 bg-black/30"></div>
           
