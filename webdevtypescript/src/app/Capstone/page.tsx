@@ -91,7 +91,7 @@ const Capstone: React.FC = () => {
               </p>
             </div>
             
-            {/* Video Container */}
+            {/* YouTube Video Container */}
             <div className="flex justify-center w-full">
               <div className="relative group w-full max-w-4xl">
                 {/* Glow Effect - moved behind video */}
@@ -99,15 +99,15 @@ const Capstone: React.FC = () => {
           
                 {/* Responsive Video Container */}
                 <div className="relative w-full bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-700 group-hover:shadow-purple-500/20 transition-all duration-300" style={{ aspectRatio: '16/9' }}>
-                  {/* Video Element */}
-                  <video 
-                    className="w-full h-full object-contain relative z-10" 
-                    controls
-                    preload="metadata"
-                  >
-                    <source src="/Final Demo.mp4" type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
+                  {/* YouTube Embed */}
+                  <iframe 
+                    className="w-full h-full relative z-10"
+                    src="https://www.youtube.com/embed/ATX34tZV1kY"
+                    title="Capstone Project Demo"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  ></iframe>
                 </div>
               </div>
             </div>
