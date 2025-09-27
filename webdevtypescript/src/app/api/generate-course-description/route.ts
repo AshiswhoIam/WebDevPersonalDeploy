@@ -1,63 +1,162 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-//This is the POST handler for incoming HTTP requests.
-//It takes a request, extracts the course name from the body,and uses an external API to generate a description of the course.
+//Updated POST handler for Gemini API course descriptions
 export async function POST(req: NextRequest) {
   try {
     //Read and parse the incoming request body as JSON
     const body = await req.json();
     const { courseName } = body;
 
-    //If there's no course name provided, return 400
+    //Validate input
     if (!courseName) {
-      return new Response(JSON.stringify({ error: 'Course name is required' }), { status: 400 });
+      return NextResponse.json(
+        { error: 'Course name is required' }, 
+        { status: 400 }
+      );
     }
 
-    //Makes a POST request to Google's Gemini API with a prompt asking for a course description
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.GOOGLE_AI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: `Provide a brief 2-3 sentence description of the university course: ${courseName}. Focus on what concepts students learn and practical applications.`
-                }
-              ]
-            }
-          ],
-          generationConfig: {
-            temperature: 0.7, //Controls randomness of response (higher = more creative)
-            maxOutputTokens: 150, //Limits the response length
+    //Check if API key exists
+    if (!process.env.GEMINI_API_KEY) {
+      console.error('GEMINI_API_KEY is not set');
+      return NextResponse.json(
+        { error: 'API key not configured' }, 
+        { status: 500 }
+      );
+    }
+
+    console.log('Making request to Gemini API for course:', courseName);
+
+    //Updated API endpoint URL using flash-lite to avoid thinking overhead
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${process.env.GEMINI_API_KEY}`;
+
+    //Make request to Gemini API with updated format
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text: `Write a 2-3 sentence description of: ${courseName}. What do students learn?`
+              }
+            ]
           }
-        }),
-      }
-    );
+        ],
+        generationConfig: {
+          temperature: 0.3,
+          maxOutputTokens: 150,
+          topP: 0.9
+        },
+        //Simple system instruction for direct responses
+        systemInstruction: {
+          parts: [
+            {
+              text: "Provide direct, concise course descriptions without explanations or reasoning."
+            }
+          ]
+        },
+        safetySettings: [
+          {
+            category: "HARM_CATEGORY_HARASSMENT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          {
+            category: "HARM_CATEGORY_HATE_SPEECH", 
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          {
+            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          {
+            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          }
+        ]
+      }),
+    });
 
-    //If the external API request fails, throw an error and skip to catch block
+    console.log('Gemini API response status:', response.status);
+
+    //Check if request was successful
     if (!response.ok) {
-      throw new Error(`API request failed: ${response.status}`);
+      const errorText = await response.text();
+      console.error('Gemini API error:', errorText);
+      
+      //Handle specific error cases
+      if (response.status === 400) {
+        return NextResponse.json(
+          { error: 'Invalid request to AI service' }, 
+          { status: 400 }
+        );
+      } else if (response.status === 403) {
+        return NextResponse.json(
+          { error: 'API key invalid or quota exceeded' }, 
+          { status: 403 }
+        );
+      } else {
+        return NextResponse.json(
+          { error: `AI service error: ${response.status}` }, 
+          { status: response.status }
+        );
+      }
     }
 
-    //Parse the response JSON and extract the generated course description
+    //Parse the response
     const data = await response.json();
-    const description = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-
-    //If no description was generated then err
-    if (!description) {
-      throw new Error('No description generated');
+    console.log('Gemini API response data:', JSON.stringify(data, null, 2));
+    
+    //Debug: Log the content structure specifically
+    if (data.candidates?.[0]?.content) {
+      console.log('Content structure:', JSON.stringify(data.candidates[0].content, null, 2));
     }
 
-    //Successfully return the generated course description
-    return new Response(JSON.stringify({ description }), { status: 200 });
+    //Extract the generated text with improved error handling
+    let description = '';
+    
+    //Check if there are candidates and content
+    if (data.candidates && data.candidates.length > 0) {
+      const candidate = data.candidates[0];
+      
+      //Check if content exists and has parts
+      if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
+        description = candidate.content.parts[0].text?.trim();
+      }
+      
+      // f no description but finished due to MAX_TOKENS, provide a fallback
+      if (!description && candidate.finishReason === 'MAX_TOKENS') {
+        description = 'Course description generation was incomplete due to length limits. Please try again.';
+      }
+    }
+
+    if (!description) {
+      console.error('No description in response:', data);
+      
+      //Check for specific finish reasons
+      if (data.candidates?.[0]?.finishReason === 'SAFETY') {
+        return NextResponse.json(
+          { error: 'Content blocked by safety filters' }, 
+          { status: 400 }
+        );
+      }
+      
+      return NextResponse.json(
+        { error: 'No description generated by AI service' }, 
+        { status: 500 }
+      );
+    }
+
+    //Return successful response
+    return NextResponse.json({ description }, { status: 200 });
+
   } catch (error) {
-    //Log any errors to the server console and return a 500 Internal Server Error
-    console.error('Error generating course description:', error);
-    return new Response(JSON.stringify({ error: 'Failed to generate course description server error' }), { status: 500 });
+    console.error('Error in course description handler:', error);
+    return NextResponse.json(
+      { error: 'Internal server error generating course description' }, 
+      { status: 500 }
+    );
   }
 }
