@@ -38,3 +38,5 @@ Better Comments
 work on deployment.
 REMINDER TO FIX DB COLLECTIONS FOR DELETED STUFF
 some user exp stuff later when dep.
+
+patched it all.
